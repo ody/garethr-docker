@@ -24,10 +24,10 @@ class docker::service (
     enable     => true,
     hasstatus  => true,
     hasrestart => true,
-    provider   => $operatingsystem {
+    provider   => ? $operatingsystem {
       'ubuntu' => upstart,
       default  => undef,
-    }
+    },
   }
 
   case $operatingsystem {
