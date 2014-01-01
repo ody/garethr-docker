@@ -43,7 +43,7 @@ class docker::service (
       file { '/etc/default/docker':
         ensure   => present,
         force    => true,
-        contenct => template('docker/etc/default/docker'),
+        content  => template('docker/etc/default/docker'),
         notify   => Service['docker'],
       }
     }
