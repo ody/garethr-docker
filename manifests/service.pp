@@ -17,19 +17,35 @@ class docker::service (
   $socket_bind          = $docker::socket_bind,
   $service_state        = $docker::service_state,
   $root_dir             = $docker::root_dir,
-){
+) {
+
   service { 'docker':
     ensure     => $service_state,
     enable     => true,
     hasstatus  => true,
     hasrestart => true,
-    provider   => upstart,
+    provider   => $operatingsystem {
+      'ubuntu' => upstart,
+      default  => undef,
+    }
   }
 
-  file { '/etc/init/docker.conf':
-    ensure  => present,
-    force   => true,
-    content => template('docker/etc/init/docker.conf.erb'),
-    notify  => Service['docker'],
+  case $operatingsystem {
+    ubuntu: {
+      file { '/etc/init/docker.conf':
+        ensure  => present,
+        force   => true,
+        content => template('docker/etc/init/docker.conf.erb'),
+        notify  => Service['docker'],
+      }
+    }
+    debian: {
+      file { '/etc/default/docker':
+        ensure   => present,
+        force    => true,
+        contenct => template('docker/etc/default/docker'),
+        notify   => Service['docker'],
+      }
+    }
   }
 }
