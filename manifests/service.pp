@@ -17,6 +17,7 @@ class docker::service (
   $socket_bind          = $docker::socket_bind,
   $service_state        = $docker::service_state,
   $root_dir             = $docker::root_dir,
+  $service_provider     = $docker::service_provider,
 ) {
 
   service { 'docker':
@@ -24,10 +25,7 @@ class docker::service (
     enable     => true,
     hasstatus  => true,
     hasrestart => true,
-    provider   => $operatingsystem ? {
-      'ubuntu' => upstart,
-      default  => undef,
-    },
+    provider   => $service_provider
   }
 
   case $operatingsystem {
