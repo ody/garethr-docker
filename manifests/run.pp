@@ -59,11 +59,22 @@ define docker::run(
 
   case $::osfamily {
     'Debian': {
-      $initscript = "/etc/init/docker-${sanitised_title}.conf"
-      $init_template = 'docker/etc/init/docker-run.conf.erb'
-      $hasstatus  = true
-      $hasrestart = false
-      $mode = '0644'
+      case $::operatingsystem {
+        'Ubuntu': {
+          $initscript = "/etc/init/docker-${sanitised_title}.conf"
+          $init_template = 'docker/etc/init/docker-run.conf.erb'
+          $hasstatus  = true
+          $hasrestart = false
+          $mode = '0644'
+        }
+        default: {
+          $hasstatus  = true
+          $hasrestart = false
+          $initscript = "/etc/init.d/docker-${sanitised_title}"
+          $init_template = 'docker/etc/init.d/docker-run-wheezy.erb'
+          $mode = '0755'
+        }
+      }
     }
     'RedHat': {
       $initscript = "/etc/init.d/docker-${sanitised_title}"

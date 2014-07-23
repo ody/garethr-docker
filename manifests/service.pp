@@ -38,16 +38,19 @@ class docker::service (
       $hasstatus     = true
       $hasrestart    = false
 
-      file { '/etc/init.d/docker':
-          ensure => 'absent',
-          notify => Service['docker'],
-      }
-
       file { '/etc/default/docker':
         ensure  => present,
         force   => true,
         content => template('docker/etc/default/docker.erb'),
         notify  => Service['docker'],
+      }
+      case $::operatingsystem {
+        'Ubuntu': {
+          file { '/etc/init.d/docker':
+              ensure => 'absent',
+              notify => Service['docker'],
+          }
+        }
       }
     }
     'RedHat': {
