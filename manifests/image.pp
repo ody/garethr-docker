@@ -26,7 +26,7 @@ define docker::image(
   validate_re($image, '^[\S]*$')
 
   if $image_tag {
-    $image_install = "docker pull -t=\"${image_tag}\" ${image}"
+    $image_install = "docker pull ${image}/${image_tag}"
     $image_remove  = "docker rmi ${image}:${image_tag}"
     $image_find    = "docker images | grep ^${image} | awk '{ print \$2 }' | grep ${image_tag}"
   } else {
